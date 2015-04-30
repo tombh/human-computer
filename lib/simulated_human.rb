@@ -6,47 +6,63 @@ class SimulatedHuman
 
   attr_accessor :memory, :program_counter
 
-  def initialize(memory, program_counter)
-    @memory = memory
-    @program_counter = program_counter
+  def initialize(computer)
+    @computer = computer
+  end
+
+  def memory_fetch(location)
+    @computer.memory[location]
+  end
+
+  def memory_set(location, value)
+    @computer.memory[location] = value
   end
 
   # The SUBLEQ instruction as a bases for an OISC
   def subleq
+    retrieve_instruction
+
+    arg1, arg2, goto_location, result_location = @computer.current_instruction
+
     # --------
     # STEPS 1, 2 and 3
     # Subtract
     # --------
-    subtrahend_location, minuend_location, goto_location = retrieve_arg_locations
-    result, _carry = subtract @memory[minuend_location], @memory[subtrahend_location]
+    result, _carry = subtract arg2, arg1
 
     # -----------------------
     # STEP 4
     # Assign result to memory
     # -----------------------
-    @memory[minuend_location] = result
+    memory_set result_location, result
 
     # ----------------------------------------
     # STEP 5
     # Where in memory is the next instruction?
     # ----------------------------------------
-    # We're using signed bytes so negative numbers will have a 1 in position 0.
-    if result[0] == '1' || result == ZERO
-      @program_counter = @memory[goto_location]
-    else
-      @program_counter, _carry = add @program_counter, THREE
-    end
+    set_next_instruction result, goto_location
   end
 
-  # Fetch the values for this iteration from memory
-  def retrieve_arg_locations
-    # No need to use human addition here, I think it's reasonable for the computer to assist in
-    # fetching the 3 adjacent bytes.
-    int_pc = @program_counter.to_i(10)
-    subtrahend = @program_counter
-    minuend = eight_bitify(int_pc + 1)
-    goto = eight_bitify(int_pc + 2)
-    [subtrahend, minuend, goto]
+  # Retrieve the current instruction being pointed to by @computer.program_counter
+  # NB. subleq arguements are all pointers to locations in memory.
+  def retrieve_instruction
+    # Get the pointers
+    locations = @computer.retrieve_arg_locations
+    # Resolve the fisrt 2 pointers to their actual values
+    arg1_location = memory_fetch locations[0]
+    arg2_location = memory_fetch locations[1]
+    arg1_value = memory_fetch arg1_location
+    arg2_value = memory_fetch arg2_location
+    goto = memory_fetch locations[2]
+    @computer.current_instruction = [arg1_value, arg2_value, goto, arg2_location]
+  end
+
+  def set_next_instruction(result, goto_location)
+    # We're using signed bytes so negative numbers will have a 1 in position 0.
+    unless result[0] == '1' || result == ZERO
+      goto_location, _carry = add @computer.program_counter, THREE
+    end
+    @computer.program_counter = goto_location
   end
 
   # Binary subtraction of signed bytes using 2's compliment method.
@@ -123,10 +139,5 @@ class SimulatedHuman
   # Are the two bits different?
   def boolean_xor(left, right)
     left != right ? '1' : '0'
-  end
-
-  # Convert integer to padded 8bit binary string
-  def eight_bitify(integer)
-    integer.to_s(2).rjust(8, '0')
   end
 end

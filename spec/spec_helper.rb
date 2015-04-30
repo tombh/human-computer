@@ -1,1 +1,2 @@
-require_relative '../simulated_human'
+require_relative '../boot'
+require 'lib/simulated_human'

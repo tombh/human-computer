@@ -1,7 +1,16 @@
 require 'spec_helper'
 
 describe SimulatedHuman do
-  let(:human) { SimulatedHuman.new({}, '00000001') }
+  let(:computer) { Computer.new }
+  let(:human) { SimulatedHuman.new(computer) }
+  let(:assembler) { Assembler.new }
+
+  # Convert a binary array into an addressable memory hash
+  def make_memory_addressable(program)
+    assembler.data = program
+    assembler.make_memory_addressable
+    assembler.data
+  end
 
   it 'should flip a byte' do
     expect(human.flip '00000000').to eq '11111111'
@@ -61,30 +70,40 @@ describe SimulatedHuman do
   end
 
   it 'should carry out the SUBLEQ without a branch' do
-    human.memory = {
-      '00000000' => '00000000',
-      '00000001' => '00000001', # 1
-      '00000010' => '00000010', # 2
-      '00000011' => '11111111'  # goto (which should be ignored)
-    }
+    # 2 - 1 = 1 so just goto next instruction
+    ram = [
+      # program
+      '00000100', # location 4
+      '00000101', # location 5
+      '11111111', # goto (which should be ignored)
+      # data
+      '00000001', # 1
+      '00000010'  # 2
+    ]
+    computer.memory = make_memory_addressable ram
 
     human.subleq
-    expect(human.memory['00000010']).to eq '00000001'
+    expect(computer.memory['00000101']).to eq '00000001'
     # Result is not negative so program_counter should just be incremented by 3
-    expect(human.program_counter).to eq '00000100'
+    expect(computer.program_counter).to eq '00000100'
   end
 
   it 'should carry out the SUBLEQ with a branch' do
-    human.memory = {
-      '00000000' => '00000000',
-      '00000001' => '00000100', # 4
-      '00000010' => '00000001', # 1
-      '00000011' => '11111111'  # goto
-    }
+    # 1 - 4 = -3 so branch to 11111111
+    ram = [
+      # program
+      '00000100', # location 4
+      '00000101', # location 5
+      '11111111', # goto
+      # data
+      '00000100', # 4
+      '00000001'  # 1
+    ]
+    computer.memory = make_memory_addressable ram
 
     human.subleq
-    expect(human.memory['00000010']).to eq '11111101' # -3
+    expect(computer.memory['00000101']).to eq '11111101' # -3
     # Result is negative so program_counter should point to the 'goto' argument
-    expect(human.program_counter).to eq '11111111'
+    expect(computer.program_counter).to eq '11111111'
   end
 end
