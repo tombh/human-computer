@@ -4,25 +4,69 @@ class SimulatedHuman
   ONE   = '00000001'
   THREE = '00000011'
 
-  attr_accessor :memory, :program_counter
+  attr_accessor :memory, :program_counter, :cycle
 
   def initialize(computer)
     @computer = computer
+    @cycle = 0
   end
 
   def memory_fetch(location)
+    location = resolve_pointer(location) if location[0] == '1'
     @computer.memory[location]
   end
 
   def memory_set(location, value)
+    location = resolve_pointer(location) if location[0] == '1'
     @computer.memory[location] = value
   end
 
-  # The SUBLEQ instruction as a bases for an OISC
-  def subleq
-    retrieve_instruction
+  # Addresses starting with '1' are memory pointers, so take a further step and fetch the byte
+  # that the pointer points to.
+  def resolve_pointer(address)
+    memory_fetch calculate_twos_compliment address
+  end
 
-    arg1, arg2, goto_location, result_location = @computer.current_instruction
+  def colorize(text, color_code)
+    "\e[#{color_code}m#{text}\e[0m"
+  end
+
+  def red(text); colorize(text, 31); end
+  def green(text); colorize(text, 32); end
+
+  def debug
+    dump = @computer.memory.clone
+    puts "Cycle #{@cycle}. Green shows the current instruction. Red is a modulus memory pointer."
+    cols = 0
+    reserved_addresses_done = false
+    dump.each do |address, byte|
+      if byte[0] == '1'
+        # TODO: Only do this to known subleq instructions, not memory as well
+        byte = red "#{calculate_twos_compliment(byte)}"
+      end
+      address = green(address) if address == @computer.program_counter
+      print "#{address}|#{byte} "
+      unless reserved_addresses_done
+        print "\n"
+        reserved_addresses_done = true
+        next
+      end
+      cols += 1
+      if cols == 6
+        puts "\n"
+        cols = 0
+      end
+    end
+    puts "\n\n"
+  end
+
+  # The SUBLEQ instruction as a basis for an OISC
+  def subleq
+    debug if ENV['DEBUG']
+
+    @cycle += 1
+
+    arg1, arg2, goto_location, result_location = retrieve_instruction
 
     # --------
     # STEPS 1, 2 and 3
@@ -70,15 +114,16 @@ class SimulatedHuman
   # Subtrahend is the number being taken away from the other number.
   # Therefore: difference = minuend - subtrahend
   def subtract(minuend, subtrahend)
-    # 2's compliment method
-    # STEP 1: flip bits
-    flipped = flip subtrahend
-    # STEP 2: increment
-    twos_compliment, _carry = add flipped, ONE
+    twos_compliment = calculate_twos_compliment subtrahend
 
-    # STEP 3
     # Adding the 2's compliment to the minuend is the same as subtracting
     add minuend, twos_compliment
+  end
+
+  def calculate_twos_compliment(byte)
+    flipped = flip byte
+    result, _carry = add flipped, ONE
+    result
   end
 
   # Flip a bit to its opposite sign
@@ -87,8 +132,8 @@ class SimulatedHuman
   # [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
   # "Flip each bit!"
   # [1] [0] [1] [0] [0] [0] [1] [0]
-  def flip(subtrahend)
-    subtrahend.split('').map { |i| i == '0' ? '1' : '0' }.join
+  def flip(byte)
+    byte.split('').map { |i| i == '0' ? '1' : '0' }.join
   end
 
   # Add two binary values

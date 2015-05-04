@@ -73,6 +73,7 @@ describe SimulatedHuman do
     # 2 - 1 = 1 so just goto next instruction
     ram = [
       # program
+      '00000000', # Always 0
       '00000100', # location 4
       '00000101', # location 5
       '11111111', # goto (which should be ignored)
@@ -92,6 +93,7 @@ describe SimulatedHuman do
     # 1 - 4 = -3 so branch to 11111111
     ram = [
       # program
+      '00000000', # Always 0
       '00000100', # location 4
       '00000101', # location 5
       '11111111', # goto
