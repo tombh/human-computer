@@ -1,6 +1,6 @@
 # Proof of concept for human-based SUBLEQ computer.
 # The fundamental principle to follow is: it should be possible to play as a board game.
-class Computer
+class HumanComputer
   attr_accessor(
     # This would be a large board with lots of cells or a pannable google maps-style map of cells
     :memory,
@@ -13,6 +13,11 @@ class Computer
   def initialize
     # Where the first instruction is located
     @program_counter = '00000001'
+  end
+
+  # Root path of the project on the host filesystem
+  def self.root
+    File.join(File.dirname(__FILE__), '../')
   end
 
   # Given an assembler DSL file, assemble it and load into memory

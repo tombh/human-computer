@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Computer do
-  let(:computer) { Computer.new }
+describe HumanComputer do
+  let(:computer) { HumanComputer.new }
 
   it 'should calculate 1+1' do
     computer.load('add')

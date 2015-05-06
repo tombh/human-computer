@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'mongoid'
+
 # Helps create DSLs
 gem 'cleanroom'
 

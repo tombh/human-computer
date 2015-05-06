@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SimulatedHuman do
-  let(:computer) { Computer.new }
+  let(:computer) { HumanComputer.new }
   let(:human) { SimulatedHuman.new(computer) }
   let(:assembler) { Assembler.new }
 

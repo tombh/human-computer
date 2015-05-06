@@ -45,7 +45,6 @@ class Macros
 
   # Subtract mem[a] from mem[b]
   def sub(a, b)
-    # Check if a or b are pointers and resolve their references
     @data.concat [a, b, NextInstruction]
   end
   expose :sub

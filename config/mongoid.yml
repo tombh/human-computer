@@ -1,0 +1,21 @@
+default_hosts: &default_host
+  hosts:
+    - localhost:27017
+
+production:
+  sessions:
+    default:
+      database: human_computer
+      <<: *default_host
+
+development:
+  sessions:
+    default:
+      database: human_computer_dev
+      <<: *default_host
+
+test:
+  sessions:
+    default:
+      database: human_computer_test
+      <<: *default_host

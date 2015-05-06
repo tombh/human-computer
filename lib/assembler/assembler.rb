@@ -66,7 +66,7 @@ class Assembler
   def cast(object)
     case object
     when Integer
-      [Computer.eight_bitify(object)]
+      [HumanComputer.eight_bitify(object)]
     when String
       cast_string object
     else
@@ -79,16 +79,16 @@ class Assembler
     # Convert characters to their ASCII integer representations
     ascii_representations = string.split('').map(&:ord)
     # Convert ASCII integres to bytes
-    string_of_bytes = ascii_representations.map { |i| Computer.eight_bitify i }
+    string_of_bytes = ascii_representations.map { |i| HumanComputer.eight_bitify i }
     # All strings should be zero-terminated
-    string_of_bytes << Computer.eight_bitify(0)
+    string_of_bytes << HumanComputer.eight_bitify(0)
   end
 
   # Given a sequential list of bytes, give each byte an 8 bit memory address
   def make_memory_addressable
     hash = {}
     @data.length.times do |index|
-      key = Computer.eight_bitify index
+      key = HumanComputer.eight_bitify index
       hash[key] = @data[index]
     end
     @data = hash
@@ -141,7 +141,7 @@ class Assembler
   # from memory.
   def convert_binary_to_signed_negative(address)
     twos_compliment = convert_to_signed_twos_complement address.to_i(2)
-    Computer.eight_bitify twos_compliment
+    HumanComputer.eight_bitify twos_compliment
   end
 
   # We use the 2s compliment convention of representing negative numbers through the first bit.
@@ -168,7 +168,7 @@ class Assembler
     @data.each do |address, byte|
       next unless byte == Macros::NextInstruction
       next_instruction_int = address.to_i(2) + 1
-      next_instruction_bin = Computer.eight_bitify(next_instruction_int)
+      next_instruction_bin = HumanComputer.eight_bitify(next_instruction_int)
       @data[address] = next_instruction_bin
     end
   end
