@@ -51,9 +51,8 @@ module HumanComputer
       set_next_instruction result, goto_location
     end
 
-    def memory_fetch(location, allow_resolve = true)
-      location = resolve_pointer(location) if allow_resolve
-      @memory.read location
+    def memory_fetch(location)
+      @memory.read resolve_pointer(location)
     end
 
     def memory_set(location, value)
@@ -64,11 +63,11 @@ module HumanComputer
     # that the pointer points to.
     def resolve_pointer(address)
       return address unless address[0] == '1'
-      memory_fetch calculate_twos_compliment(address), false
+      memory_fetch calculate_twos_compliment(address)
     end
 
     # Retrieve the current instruction being pointed to by @program_counter
-    # NB. subleq arguements are all pointers to locations in memory.
+    # NB. SUBLEQ arguments are all pointers to locations in memory.
     def retrieve_instruction
       # Get the pointers
       locations = retrieve_arg_locations

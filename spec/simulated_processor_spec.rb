@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 # ==========================================================================================
-# The size of this file might be a good indicator of how easy it is for a processor to power the
-# processor computer.
+# The size of this file might be a good indicator of how easy it is for a human to power the
+# human computer.
 # ==========================================================================================
 
 describe HumanComputer::SimulatedProcessor do
@@ -14,15 +14,6 @@ describe HumanComputer::SimulatedProcessor do
     assembler.data = program
     assembler.make_memory_addressable
     assembler.data
-  end
-
-  describe 'Memory interaction' do
-    it 'should resolve a negative address as indirect memory when reading' do
-    end
-    it 'should resolve a negative address as indirect memory when writing' do
-    end
-    it 'should resolve a negative address only once' do
-    end
   end
 
   it 'should flip a byte' do
@@ -120,5 +111,28 @@ describe HumanComputer::SimulatedProcessor do
     expect(processor.memory.read('00000101')).to eq '11111101' # -3
     # Result is negative so program_counter should point to the 'goto' argument
     expect(processor.program_counter).to eq '11111111'
+  end
+
+  describe 'Memory interaction' do
+    it 'should resolve a negative address as indirect memory when reading' do
+      ram = [
+        '00000000', # Always 0
+        '00000010', # Ref to 3rd element in memory
+        '01010101'  # 3rd element in memory
+      ]
+      processor.memory.flash make_memory_addressable ram
+      expect(processor.memory_fetch('11111111')).to eq '01010101'
+    end
+
+    it 'should resolve a negative address as indirect memory when writing' do
+      ram = [
+        '00000000', # Always 0
+        '00000010', # Ref to 3rd element in memory
+        '01010101'  # 3rd element in memory
+      ]
+      processor.memory.flash make_memory_addressable ram
+      processor.memory_set('11111111', '01111110')
+      expect(processor.memory_fetch('11111111')).to eq '01111110'
+    end
   end
 end
