@@ -14,15 +14,6 @@ module HumanComputer
       @program_start = Processor.eight_bitify 1
     end
 
-    # Various passes of the data to turn into its final form
-    def passes
-      cast_pass
-      wrap_label_around_next_item
-      make_memory_addressable
-      replace_symbols_with_refs
-      convert_next_classes_to_refs
-    end
-
     # Evaluate the commands in the file to build up an array of bytes.
     def evaluate_dsl
       # `Macros` contains all the basic instructions for our 'CPU'.
@@ -37,60 +28,6 @@ module HumanComputer
       @data = assembler.data
     end
 
-    # Cast non-binary data to binary
-    def cast_pass
-      casted = []
-      @data.length.times do |index|
-        if @data[index].is_a? Hash
-          # `remaining` contains data greater than the single byte used for the memory marker
-          hash, remaining = cast_inside_hash(@data[index])
-          casted.concat [hash, *remaining]
-        else
-          casted.concat cast(@data[index])
-        end
-      end
-      @data = casted
-    end
-
-    # Cast the object inside the hash. Remembering that hashes are only used to label positions in
-    # memory.
-    def cast_inside_hash(hash)
-      # Unpack the hash
-      key = hash.keys.first
-      value = hash.values.first
-      # Repack the hash.
-      # The label for the hash need only point to the first item. Either the program should know
-      # how long the data is or do something like use zero-terminated srings.
-      # So [{:a => [1,2,3]}] becomes [{:a => '1'}, ['10', '11']]
-      casted_values = cast(value)
-      first_item = casted_values.shift
-      remaining = casted_values
-      [{ key => first_item }, remaining]
-    end
-
-    # Cast a ruby object into a binary string.
-    # Always returns array.
-    def cast(object)
-      case object
-      when Integer
-        [HumanComputer::Processor.eight_bitify(object)]
-      when String
-        cast_string object
-      else
-        [object]
-      end
-    end
-
-    # Cast a string into ASCII binary representation
-    def cast_string(string)
-      # Convert characters to their ASCII integer representations
-      ascii_representations = string.split('').map(&:ord)
-      # Convert ASCII integres to bytes
-      string_of_bytes = ascii_representations.map { |i| HumanComputer::Processor.eight_bitify i }
-      # All strings should be zero-terminated
-      string_of_bytes << HumanComputer::Processor.eight_bitify(0)
-    end
-
     # Given a sequential list of bytes, give each byte an 8 bit memory address
     def make_memory_addressable
       hash = {}
@@ -99,6 +36,33 @@ module HumanComputer
         hash[key] = @data[index]
       end
       @data = hash
+    end
+
+    # If a symbol is being used as a memory pointer then assemble the address using a negative
+    # number to represent indirect memory access. Then during runtime the value will be fetched
+    # like so: memory[memory[|address|]]. Therefore using the modulus, fetching the value from
+    # memory (which is itself a normal memory address) and then fetching that subsequent address
+    # from memory.
+    def convert_binary_to_signed_negative(address)
+      twos_compliment = convert_to_signed_twos_complement address.to_i(2)
+      HumanComputer::Processor.eight_bitify twos_compliment
+    end
+
+    # We use the 2s compliment convention of representing negative numbers through the first bit.
+    def convert_to_signed_twos_complement(integer)
+      upper = 2**BITS
+      upper - integer
+    end
+
+    private
+
+    # Various passes of the data to turn into its final form
+    def passes
+      @data = Caster.cast_pass @data
+      wrap_label_around_next_item
+      make_memory_addressable
+      replace_symbols_with_refs
+      convert_next_classes_to_refs
     end
 
     # Look for hashes with Macro::Labels and use them to mark the next item
@@ -139,22 +103,6 @@ module HumanComputer
         @data[address] = value
       end
       symbol_defs
-    end
-
-    # If a symbol is being used as a memory pointer then assemble the address using a negative
-    # number to represent indirect memory access. Then during runtime the value will be fetched
-    # like so: memory[memory[|address|]]. Therefore using the modulus, fetching the value from
-    # memory (which is itself a normal memory address) and then fetching that subsequent address
-    # from memory.
-    def convert_binary_to_signed_negative(address)
-      twos_compliment = convert_to_signed_twos_complement address.to_i(2)
-      HumanComputer::Processor.eight_bitify twos_compliment
-    end
-
-    # We use the 2s compliment convention of representing negative numbers through the first bit.
-    def convert_to_signed_twos_complement(integer)
-      upper = 2**BITS
-      upper - integer
     end
 
     # Replace symbols with the memory addresses they represent
