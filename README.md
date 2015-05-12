@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/tombh/human-computer.svg)](https://travis-ci.org/tombh/human-computer)
+[![Code Climate](https://codeclimate.com/github/tombh/human-computer/badges/gpa.svg)](https://codeclimate.com/github/tombh/human-computer)
+
 # A Human Computer
 
 This is an application to facilitate a Turing Complete human computer. The guiding principle is
