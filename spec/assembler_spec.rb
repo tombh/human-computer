@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Assembler do
-  let(:assembler) { Assembler.new }
+describe HumanComputer::Assembler do
+  let(:assembler) { HumanComputer::Assembler.new }
 
   def assemble_subtract
     assembler.assemble do

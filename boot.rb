@@ -1,5 +1,5 @@
 def recursive_require(folder)
-  Dir["#{HumanComputer.root}/#{folder}/**/*.rb"].each { |f| require f }
+  Dir["#{HumanComputer::Config.root}/#{folder}/**/*.rb"].each { |f| require f }
 end
 
 ENV['HC_ENV'] ||= 'development'
@@ -13,11 +13,11 @@ require 'English'
 
 I18n.enforce_available_locales = false
 
-require_relative './lib/human_computer'
+require_relative './config/config'
 
-Mongoid.load!(HumanComputer.root + '/config/mongoid.yml')
+Mongoid.load!(HumanComputer::Config.root + '/config/mongoid.yml')
 
 # Add the project path to Ruby's library path for easy require()'ing
-$LOAD_PATH.unshift(HumanComputer.root)
+$LOAD_PATH.unshift(HumanComputer::Config.root)
 recursive_require 'lib'
 recursive_require 'api'

@@ -1,9 +1,13 @@
 require 'spec_helper'
 
-describe SimulatedHuman do
-  let(:computer) { HumanComputer.new }
-  let(:human) { SimulatedHuman.new(computer) }
-  let(:assembler) { Assembler.new }
+# ==========================================================================================
+# The size of this file might be a good indicator of how easy it is for a processor to power the
+# processor computer.
+# ==========================================================================================
+
+describe HumanComputer::SimulatedProcessor do
+  let(:processor) { HumanComputer::SimulatedProcessor.new }
+  let(:assembler) { HumanComputer::Assembler.new }
 
   # Convert a binary array into an addressable memory hash
   def make_memory_addressable(program)
@@ -12,10 +16,19 @@ describe SimulatedHuman do
     assembler.data
   end
 
+  describe 'Memory interaction' do
+    it 'should resolve a negative address as indirect memory when reading' do
+    end
+    it 'should resolve a negative address as indirect memory when writing' do
+    end
+    it 'should resolve a negative address only once' do
+    end
+  end
+
   it 'should flip a byte' do
-    expect(human.flip '00000000').to eq '11111111'
-    expect(human.flip '11111111').to eq '00000000'
-    expect(human.flip '11001110').to eq '00110001'
+    expect(processor.flip '00000000').to eq '11111111'
+    expect(processor.flip '11111111').to eq '00000000'
+    expect(processor.flip '11001110').to eq '00110001'
   end
 
   it 'should add 2 bits with carry' do
@@ -31,7 +44,7 @@ describe SimulatedHuman do
     ]
 
     table.each do |row|
-      sum, carry = human.full_adder row[0], row[1], row[2]
+      sum, carry = processor.full_adder row[0], row[1], row[2]
       expectation = [row[0], row[1], row[2], sum, carry]
       expect(expectation).to eq row
     end
@@ -48,7 +61,7 @@ describe SimulatedHuman do
     ]
 
     examples.each do |row|
-      sum, carry = human.add row[0], row[1]
+      sum, carry = processor.add row[0], row[1]
       expectation = [row[0], row[1], sum, carry]
       expect(expectation).to eq row
     end
@@ -63,7 +76,7 @@ describe SimulatedHuman do
     ]
 
     examples.each do |row|
-      result, carry = human.subtract row[0], row[1]
+      result, carry = processor.subtract row[0], row[1]
       expectation = [row[0], row[1], result, carry]
       expect(expectation).to eq row
     end
@@ -81,12 +94,12 @@ describe SimulatedHuman do
       '00000001', # 1
       '00000010'  # 2
     ]
-    computer.memory = make_memory_addressable ram
+    processor.memory.flash make_memory_addressable ram
 
-    human.subleq
-    expect(computer.memory['00000101']).to eq '00000001'
+    processor.subleq
+    expect(processor.memory.read('00000101')).to eq '00000001'
     # Result is not negative so program_counter should just be incremented by 3
-    expect(computer.program_counter).to eq '00000100'
+    expect(processor.program_counter).to eq '00000100'
   end
 
   it 'should carry out the SUBLEQ with a branch' do
@@ -101,11 +114,11 @@ describe SimulatedHuman do
       '00000100', # 4
       '00000001'  # 1
     ]
-    computer.memory = make_memory_addressable ram
+    processor.memory.flash make_memory_addressable ram
 
-    human.subleq
-    expect(computer.memory['00000101']).to eq '11111101' # -3
+    processor.subleq
+    expect(processor.memory.read('00000101')).to eq '11111101' # -3
     # Result is negative so program_counter should point to the 'goto' argument
-    expect(computer.program_counter).to eq '11111111'
+    expect(processor.program_counter).to eq '11111111'
   end
 end
