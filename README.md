@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/tombh/human-computer.svg)](https://travis-ci.org/tombh/human-computer)
 [![Code Climate](https://codeclimate.com/github/tombh/human-computer/badges/gpa.svg)](https://codeclimate.com/github/tombh/human-computer)
+[![Test Coverage](https://codeclimate.com/github/tombh/human-computer/badges/coverage.svg)](https://codeclimate.com/github/tombh/human-computer/coverage)
 
 # A Human Computer
 
