@@ -5,9 +5,9 @@ module HumanComputer
     include Mongoid::Document
 
     belongs_to :process
+    has_many :tiles
 
-    # All hash items have this structure: { location => [tile_id, tile_id, ...] }
-    # Where 'location' is a string representation of a binary address
-    field :grid, type: Hash
+    # In binary string form, eg; '01010101'
+    field :address
   end
 end

@@ -1,4 +1,10 @@
 module HumanComputer
+  VERSION = '0.0.1'
+
+  def self.recursive_require(folder)
+    Dir["#{HumanComputer::Config.root}/#{folder}/**/*.rb"].each { |f| require f }
+  end
+
   # Config for the whole Human Computer app
   class Config
     class << self

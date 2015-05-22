@@ -1,7 +1,3 @@
-def recursive_require(folder)
-  Dir["#{HumanComputer::Config.root}/#{folder}/**/*.rb"].each { |f| require f }
-end
-
 ENV['HC_ENV'] ||= 'development'
 ENV['RACK_ENV'] = ENV['HC_ENV']
 
@@ -19,5 +15,5 @@ Mongoid.load!(HumanComputer::Config.root + '/config/mongoid.yml')
 
 # Add the project path to Ruby's library path for easy require()'ing
 $LOAD_PATH.unshift(HumanComputer::Config.root)
-recursive_require 'lib'
-recursive_require 'api'
+HumanComputer.recursive_require 'lib'
+HumanComputer.recursive_require 'api'

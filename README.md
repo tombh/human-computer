@@ -33,3 +33,28 @@ Things to consider for development;
 * Improving the efficiency of the CPU. Hello World is currently 155 cycles.
 * What programs can this run? Is something like Tetris possible?
 * How should output be displayed? In the main memory, or through a seperate 'monitor' grid?
+
+## Motivation
+My original reason for building this came from a desire to inject more of the open source spirit
+into hardware. Whereas creating software from first principles is relatively easy in the modern
+age, creating hardware from scratch is hard. If more people know that computers can be created
+from simple building blocks, maybe it will improve the chances of open source hardware.
+
+The other big reason is educational, both for myself and for the wider world. The Human Computer
+is Turing Complete (citation needed!) and so demonstrates the fundamentals of computer science.
+
+## Usage
+
+**API server**    
+TBD
+`guard`
+
+**Tests**    
+`rspec`
+
+**Running Human Computer assembler on the CLI**    
+TBD
+`rake`
+
+**Frontend**    
+See `frontend/README.md`

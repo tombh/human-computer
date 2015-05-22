@@ -3,7 +3,9 @@ module HumanComputer
   class Tile
     include Mongoid::Document
 
-    # Serialized data, eg. Fabric.js JSON, or SVG, etc
-    field :data
+    belongs_to :memory
+
+    # JSON array of paths
+    field :paths
   end
 end
