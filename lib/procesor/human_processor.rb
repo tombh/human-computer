@@ -1,3 +1,5 @@
+require_relative 'processor'
+
 module HumanComputer
   class HumanProcessor < Processor
     def self.boot(program)
