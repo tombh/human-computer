@@ -3,7 +3,7 @@
   "description": "A Computer powered completely by humans",
   "repository": "https://github.com/tombh/human-computer",
   "scripts": {
-    "test": "NODE_PATH=./app/scripts/ ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine-node --coffee --captureExceptions spec"
+    "test": "NODE_PATH=./app/scripts/ ./node_modules/.bin/istanbul cover ./node_modules/.bin/jasmine-node -- --coffee --captureExceptions spec"
   },
   "browserify": {
     "transform": [
