@@ -7,7 +7,6 @@ class Tile
       api.message 'Serialised'
 
   @getPath: (event) ->
-    element = document.getElementById('c2')
     api.get 'tile', {}, (result) ->
       api.message 'Rendering...'
       Draw.renderTile element, JSON.parse(result)

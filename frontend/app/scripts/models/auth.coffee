@@ -1,4 +1,5 @@
 m = require 'mithril'
+Logger = require 'models/logger'
 
 module.exports = {
   token: m.prop(localStorage.token),
@@ -41,7 +42,7 @@ module.exports = {
     @request '/auth/user'
 
   success: (result) ->
-    console.log "AJAX success", result
+    Logger.info "AJAX success", result
     result
 
   error: (result) ->
@@ -49,7 +50,7 @@ module.exports = {
     if result.status == 401
       # @originalRoute = m.route()
       m.route '/login'
-    console.log "AJAX error", result.message.error
+    Logger.error "AJAX error", result.message.error
     result
 
   # Central wrapper around Mithril's request method
@@ -63,7 +64,6 @@ module.exports = {
       error_in_result = (typeof res is 'object') and ('error' in res)
       message = if error_in_result then res.error else res
       { message: message }
-
     m.request(options).then(@success, @error)
 
   # Make an authenticated request
