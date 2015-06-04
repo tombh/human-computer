@@ -1,9 +1,13 @@
 ENV['HC_ENV'] ||= 'development'
-ENV['RACK_ENV'] = ENV['HC_ENV']
+ENV['RACK_ENV'] ||= ENV['HC_ENV']
 
 require 'rubygems'
 require 'bundler/setup'
 Bundler.require :default, ENV['HC_ENV']
+
+require 'roar/representer'
+require 'roar/json'
+require 'roar/json/hal'
 
 require 'English'
 

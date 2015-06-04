@@ -49,6 +49,7 @@ module.exports = {
     # If auth error, redirect
     if result.status == 401
       # @originalRoute = m.route()
+      Logger.error "Unauthorised AJAX request", result.message.error
       m.route '/login'
     Logger.error "AJAX error", result.message.error
     result

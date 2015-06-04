@@ -20,7 +20,7 @@ module HumanComputer
     # Pass in a memory class, likely either DB persisted or a simple in-memory hash
     def initialize(memory_class = HashMemory)
       @debugger = Debugger.new self
-      @memory = memory_class.new
+      @memory_class = memory_class
       @program_counter = self.class.eight_bitify 1
       @cycle = 0
     end
@@ -30,14 +30,16 @@ module HumanComputer
       path = "programs/#{program}.rb"
       assembler = Assembler.new
       assembler.assemble path
+      pid = Pid.create name: program, memory_class: @memory_class
+      @memory = pid.memory
       @memory.flash assembler.data
       @program_counter = assembler.program_start
     end
 
     # Load an already running program into memory
-    def resume(process)
-      process = Process.find(process)
-      @memory = PersistedMemory.new process
+    def resume(pid)
+      pid = Pid.find(pid)
+      @memory = pid.memory
       @program_counter = process.program_counter
     end
 

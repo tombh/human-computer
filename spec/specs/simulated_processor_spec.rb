@@ -6,7 +6,11 @@ require 'spec_helper'
 # ==========================================================================================
 
 describe HumanComputer::SimulatedProcessor do
-  let(:processor) { HumanComputer::SimulatedProcessor.new }
+  let(:processor) do
+    processor = HumanComputer::SimulatedProcessor.new
+    processor.memory = HumanComputer::HashMemory.new
+    processor
+  end
   let(:assembler) { HumanComputer::Assembler.new }
 
   # Convert a binary array into an addressable memory hash

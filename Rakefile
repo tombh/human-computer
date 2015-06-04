@@ -25,4 +25,5 @@ end
 desc 'Initialise a program into memory'
 task load: :boot do
   HumanComputer::HumanProcessor.boot 'add'
+  HumanComputer::HumanProcessor.boot 'hello_world'
 end

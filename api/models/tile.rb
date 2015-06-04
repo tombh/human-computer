@@ -1,11 +1,9 @@
-module HumanComputer
-  # A human-drawn boolean bit. These make up the memory
-  class Tile
-    include Mongoid::Document
+# A human-drawn boolean bit. These make up the memory
+class Tile
+  include Mongoid::Document
 
-    belongs_to :memory
+  belongs_to :address
 
-    # JSON array of paths
-    field :paths
-  end
+  # JSON array of paths
+  field :paths
 end

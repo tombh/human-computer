@@ -4,8 +4,11 @@ HumanComputer.recursive_require 'api/routes'
 class API < Grape::API
   version :v1, using: :accept_version_header
   format :json
+  formatter :json, Grape::Formatter::Roar
   prefix :api
-  rescue_from :all
+  # rescue_from :all do |e|
+  #   error!("rescued from #{e.class.name}")
+  # end
 
   helpers do
     def authenticate!(_level)
@@ -19,22 +22,7 @@ class API < Grape::API
 
   desc 'API version'
   get '/version' do
-    { 'version' => HumanComputer::VERSION }
-  end
-
-  desc 'WIP'
-  params do
-    requires :paths
-  end
-  post '/tile' do
-    tile = HumanComputer::Tile.first || HumanComputer::Tile.create
-    tile.data = params[:paths]
-    tile.save!
-  end
-
-  desc 'dasdasda'
-  get '/tile' do
-    HumanComputer::Tile.first.data
+    { version: HumanComputer::VERSION }
   end
 
   mount Routes::Process

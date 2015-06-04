@@ -172,6 +172,9 @@ mock.window = (function() {
 global.window = mock.window
 global.document = mock.window.document
 
+global.window.btoa = function(bin){ return new Buffer(bin).toString('base64') }
+global.window.atob = function(b64){ return new Buffer(b64, 'base64').toString('binary') }
+
 document.body = document.createElement("body")
 
 var m = require('mithril');
