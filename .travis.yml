@@ -1,3 +1,4 @@
+services: mongodb
 before_script:
   - cd frontend; npm install; cd ..
 script:
