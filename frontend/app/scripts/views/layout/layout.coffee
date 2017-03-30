@@ -3,6 +3,6 @@ m = require 'mithril'
 module.exports = (content) ->
   (controller) ->
     m '.container', [
-      m 'p', controller.api.message()
+      m 'p.message', controller.api.message()
       content(controller)
     ]

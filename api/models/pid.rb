@@ -9,7 +9,7 @@ class Pid
   # The human-readable name of the program
   field :name
 
-  # The name of the class used to store the  process' memory
+  # The name of the class used to store the process' memory
   field :memory_class
 
   # The size of a byte (both word and address size). Typically 8 bits per byte

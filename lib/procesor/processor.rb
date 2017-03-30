@@ -40,7 +40,6 @@ module HumanComputer
     def resume(pid)
       pid = Pid.find(pid)
       @memory = pid.memory
-      @program_counter = process.program_counter
     end
 
     # Fetch the values for this iteration from memory

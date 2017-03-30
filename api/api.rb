@@ -5,7 +5,7 @@ class API < Grape::API
   version :v1, using: :accept_version_header
   format :json
   formatter :json, Grape::Formatter::Roar
-  prefix :api
+  prefix :v1
   # rescue_from :all do |e|
   #   error!("rescued from #{e.class.name}")
   # end

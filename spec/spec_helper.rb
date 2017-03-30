@@ -17,6 +17,6 @@ RSpec.configure do |c|
 
   # Emtpy the DB
   c.before(:each) do
-    Mongoid.default_session.drop
+    Mongoid.purge!
   end
 end

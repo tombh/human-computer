@@ -3,19 +3,18 @@ default_hosts: &default_host
     - localhost:27017
 
 production:
-  sessions:
+  clients:
     default:
-      database: human_computer
-      <<: *default_host
+      uri: <%= ENV['MONGODB_URI'] %>
 
 development:
-  sessions:
+  clients:
     default:
       database: human_computer_dev
       <<: *default_host
 
 test:
-  sessions:
+  clients:
     default:
       database: human_computer_test
       <<: *default_host

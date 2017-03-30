@@ -2,8 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rack-cors', require: 'rack/cors'
 gem 'puma'
-gem 'mongoid'
-gem 'mongoid_auto_increment_id'
+gem 'mongoid', '~> 5.2.0'
 gem 'grape'
 gem 'roar'
 gem 'grape-roar' # For presenting lovely serialised API responses of objects
@@ -17,6 +16,7 @@ gem 'rake'
 gem 'cleanroom'
 
 group :development do
+  gem 'guard'
 end
 
 group :test do

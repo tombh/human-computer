@@ -4,12 +4,12 @@ module Routes
     resource :process do
       desc 'Return information about a process'
       params do
-        requires :pid, type: Integer, desc: 'Process ID'
+        requires :name, type: String, desc: 'Process name'
       end
-      route_param :pid do
+      route_param :name do
         desc 'Returns details about the process'
         get do
-          pid = Pid.find params[:pid]
+          pid = Pid.find_by name: params[:name]
           present pid, with: PidRepresenter
         end
 
@@ -23,7 +23,7 @@ module Routes
           optional :uncompressed, type: Boolean, desc: 'Return tile data uncompressed'
         end
         get 'memory' do
-          pid = Pid.find params[:pid]
+          pid = Pid.find_by name: params[:name]
           addresses = params[:addresses]
           if addresses.first.downcase == 'all'
             bytes = Address.where pid: pid

@@ -9,7 +9,7 @@ describe API do
 
   describe Routes::Process do
     before do
-      Fabricate :pid, id: 1
+      Fabricate :pid, id: 1, name: 'thing'
     end
 
     it 'should return tile data for addresses' do
@@ -17,7 +17,7 @@ describe API do
         addresses: [0, 1],
         uncompressed: true
       }
-      get '/api/process/1/memory', options
+      get '/v1/process/thing/memory', options
 
       expect(last_response.status).to eq 200
       response = JSON.parse(last_response.body)['addresses']
@@ -32,7 +32,7 @@ describe API do
         addresses: ['all'],
         uncompressed: true
       }
-      get '/api/process/1/memory', options
+      get '/v1/process/thing/memory', options
 
       expect(last_response.status).to eq 200
       response = JSON.parse(last_response.body)['addresses']

@@ -7,4 +7,20 @@ use Rack::Cors do
   end
 end
 
-run API
+map '/api' do
+  run API
+end
+
+map '/' do
+  use Rack::Static, urls: ['/assets'], root: 'frontend/build'
+  run lambda { |_env|
+    [
+      200,
+      {
+        'Content-Type'  => 'text/html',
+        'Cache-Control' => 'public, max-age=86400'
+      },
+      File.open('frontend/build/index.html', File::RDONLY)
+    ]
+  }
+end

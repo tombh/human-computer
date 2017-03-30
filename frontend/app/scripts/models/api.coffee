@@ -3,10 +3,10 @@ Auth = require 'models/auth'
 Decompress = require 'lib/decompress'
 
 class API
-  base = 'http://localhost:9393/api'
+  base = '/api/v1'
 
   constructor: ->
-    @message = m.prop('Ready...')
+    @message = m.prop 'Loading...'
 
   get: (path, params) ->
     @request 'GET', path, params
@@ -32,6 +32,9 @@ class API
       url: "#{base}/#{path}",
       data: params
     }
-    Auth.request(options)
+    @message 'Making API request'
+    Auth.request(options).then (response) =>
+      @message 'API request complete'
+      response
 
 module.exports = new API

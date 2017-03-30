@@ -1,3 +1,5 @@
+require 'api/models/representers/memory.rb'
+
 # Serialise pid objects
 module PidRepresenter
   include Roar::JSON
